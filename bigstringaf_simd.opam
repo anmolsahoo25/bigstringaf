@@ -1,0 +1,33 @@
+opam-version: "2.0"
+maintainer: "Anmol Sahoo <anmol.sahoo25@gmail.com>"
+authors: [ "Spiros Eliopoulos <spiros@inhabitedtype.com>" ]
+license: "BSD-3-clause"
+homepage: "https://github.com/anmolsahoo25/bigstringaf_simd"
+bug-reports: "https://github.com/anmolsahoo25/bigstringaf_simd/issues"
+dev-repo: "git+https://github.com/anmolsahoo25/bigstringaf_simd.git"
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name] {with-test}
+]
+depends: [
+  "dune" {build}
+  "alcotest" {with-test}
+  "bigarray-compat"
+  "ocaml" {>= "4.03.0"}
+]
+depopts: [
+  "mirage-xen-posix"
+  "ocaml-freestanding"
+]
+conflicts: [
+  "mirage-xen-posix" {< "3.1.0"}
+  "ocaml-freestanding" {< "0.4.1"}
+  "js_of_ocaml" {< "3.5.0"}
+]
+synopsis: "Bigstrings with SIMD operations"
+description: """
+Bigstringaf is a library providing fast intrinsics and blits
+for OCaml bigstrings. This library adds support for SIMD operations
+on bigstrings.
+"""

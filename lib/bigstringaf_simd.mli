@@ -9,14 +9,17 @@
     So here they are. Go crazy. *)
 
 type t =
-  (char, Bigarray_compat.int8_unsigned_elt, Bigarray_compat.c_layout) Bigarray_compat.Array1.t
+  ( char,
+    Bigarray_compat.int8_unsigned_elt,
+    Bigarray_compat.c_layout )
+  Bigarray_compat.Array1.t
 
 (** {2 Constructors} *)
 
 val create : int -> t
 (** [create n] returns a bigstring of length [n] *)
 
-val empty  : t
+val empty : t
 (** [empty] is the empty bigstring. It has length [0] and you can't really do
     much with it, but it's a good placeholder that only needs to be allocated
     once. *)
@@ -35,7 +38,6 @@ val sub : t -> off:int -> len:int -> t
 
     {b Note} that this does not allocate a new buffer, but instead shares the
     buffer of [t] with the newly-returned bigstring. *)
-
 
 (** {2 Memory-safe Operations} *)
 
@@ -93,7 +95,6 @@ val set_int64_le : t -> int -> int64 -> unit
 (** [set_int64_le t i v] sets the eight bytes in [t] starting at offset [i] to
     the value [v]. *)
 
-
 (** {3 Big-endian Byte Order}
 
     The following operations assume a big-endian byte ordering of the
@@ -146,11 +147,16 @@ val set_int64_be : t -> int -> int64 -> unit
     And in fact, that's how they're implemented. Except that bounds checking
     is performed before performing the blit. *)
 
-val blit             : t       -> src_off:int -> t -> dst_off:int -> len:int -> unit
-val blit_from_string : string  -> src_off:int -> t -> dst_off:int -> len:int -> unit
-val blit_from_bytes  : Bytes.t -> src_off:int -> t -> dst_off:int -> len:int -> unit
+val blit : t -> src_off:int -> t -> dst_off:int -> len:int -> unit
 
-val blit_to_bytes : t -> src_off:int -> Bytes.t -> dst_off:int -> len:int -> unit
+val blit_from_string :
+  string -> src_off:int -> t -> dst_off:int -> len:int -> unit
+
+val blit_from_bytes :
+  Bytes.t -> src_off:int -> t -> dst_off:int -> len:int -> unit
+
+val blit_to_bytes :
+  t -> src_off:int -> Bytes.t -> dst_off:int -> len:int -> unit
 
 (** {3 [memcmp]}
 
@@ -161,9 +167,9 @@ val blit_to_bytes : t -> src_off:int -> Bytes.t -> dst_off:int -> len:int -> uni
         memcmp(buf1 + off1, buf2 + off2, len);
       ]} *)
 
-val memcmp        : t -> int -> t      -> int -> int -> int
-val memcmp_string : t -> int -> string -> int -> int -> int
+val memcmp : t -> int -> t -> int -> int -> int
 
+val memcmp_string : t -> int -> string -> int -> int -> int
 
 (** {2 Memory-unsafe Operations}
 
@@ -172,7 +178,7 @@ val memcmp_string : t -> int -> string -> int -> int -> int
     own bounds checking. Or don't. Just make sure you know what you're doing.
     You can do it, but only do it if you have to. *)
 
-external unsafe_get : t -> int -> char         = "%caml_ba_unsafe_ref_1"
+external unsafe_get : t -> int -> char = "%caml_ba_unsafe_ref_1"
 (** [unsafe_get t i] is like {!get} except no bounds checking is performed. *)
 
 external unsafe_set : t -> int -> char -> unit = "%caml_ba_unsafe_set_1"
@@ -234,7 +240,6 @@ val unsafe_set_int64_be : t -> int -> int64 -> unit
 (** [unsafe_set_int64_be t i v] is like {!set_int64_be} except no bounds
     checking is performed. *)
 
-
 (** {3 Blits}
 
     All the following blit operations do the same thing. They copy a given
@@ -250,11 +255,16 @@ val unsafe_set_int64_be : t -> int -> int64 -> unit
     [unsafe_blit] which uses a [memmove] so that overlapping blits behave as
     expected. But in both cases, there's no bounds checking. *)
 
-val unsafe_blit             : t       -> src_off:int -> t -> dst_off:int -> len:int -> unit
-val unsafe_blit_from_string : string  -> src_off:int -> t -> dst_off:int -> len:int -> unit
-val unsafe_blit_from_bytes  : Bytes.t -> src_off:int -> t -> dst_off:int -> len:int -> unit
+val unsafe_blit : t -> src_off:int -> t -> dst_off:int -> len:int -> unit
 
-val unsafe_blit_to_bytes : t -> src_off:int -> Bytes.t -> dst_off:int -> len:int -> unit
+val unsafe_blit_from_string :
+  string -> src_off:int -> t -> dst_off:int -> len:int -> unit
+
+val unsafe_blit_from_bytes :
+  Bytes.t -> src_off:int -> t -> dst_off:int -> len:int -> unit
+
+val unsafe_blit_to_bytes :
+  t -> src_off:int -> Bytes.t -> dst_off:int -> len:int -> unit
 
 (** {3 [memcmp]}
 
@@ -265,5 +275,122 @@ val unsafe_blit_to_bytes : t -> src_off:int -> Bytes.t -> dst_off:int -> len:int
         memcmp(buf1 + off1, buf2 + off2, len);
       ]} *)
 
-val unsafe_memcmp        : t -> int -> t      -> int -> int -> int
+val unsafe_memcmp : t -> int -> t -> int -> int -> int
+
 val unsafe_memcmp_string : t -> int -> string -> int -> int -> int
+
+(** {4 [simd intrinsics]}
+    SIMD intrinsics for operating on bigstrings. Operations in this
+    module take operand and destination bigarrays and do not allocate.
+*)
+
+module Intrinsics : sig
+  external abs_i8 : (t * int) -> (t * int) -> unit = "bigstringaf_simd_abs_i8"
+    [@@noalloc]
+
+  external add_i8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_add_i8"
+    [@@noalloc]
+
+  external adds_i8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_adds_i8"
+    [@@noalloc]
+
+  external adds_u8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_adds_u8"
+    [@@noalloc]
+
+  external and_si256 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_and_si256"
+    [@@noalloc]
+
+  external andnot_si256 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_and_si256"
+    [@@noalloc]
+
+  external avg_u8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_avg_u8"
+    [@@noalloc]
+
+  external blend_i8 : (t * int) -> (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_blend_i8"
+    [@@noalloc]
+
+  external broadcast_i8 : (t * int) -> char -> unit
+    = "bigstringaf_simd_broadcast_i8"
+    [@@noalloc]
+
+  external cmpeq_i8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_cmpeq_i8"
+    [@@noalloc]
+
+  external max_i8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_max_i8"
+    [@@noalloc]
+
+  external max_u8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_max_u8"
+    [@@noalloc]
+
+  external min_i8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_min_i8"
+    [@@noalloc]
+
+  external min_u8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_min_u8"
+    [@@noalloc]
+
+  external movemask_i8 : (t * int) -> int = "bigstringaf_simd_movemask_i8"
+    [@@noalloc]
+
+  external or_si256 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_or_si256"
+    [@@noalloc]
+
+  external set_i8 : (t * int) -> char array -> unit = "bigstringaf_simd_set_i8"
+    [@@noalloc]
+
+  external shuffle_i8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_shuffle_i8"
+    [@@noalloc]
+
+  external sign_i8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_sign_i8"
+    [@@noalloc]
+
+  external sub_i8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_sub_i8"
+    [@@noalloc]
+
+  external subs_i8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_subs_i8"
+    [@@noalloc]
+
+  external subs_u8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_subs_u8"
+    [@@noalloc]
+
+  external testc_si256 : (t * int) -> (t * int) -> int
+    = "bigstringaf_simd_testc_si256"
+    [@@noalloc]
+
+  external testnzc_si256 : (t * int) -> (t * int) -> int
+    = "bigstringaf_simd_testnzc_si256"
+    [@@noalloc]
+
+  external testz_si256 : (t * int) -> (t * int) -> int
+    = "bigstringaf_simd_testz_si256"
+    [@@noalloc]
+
+  external unpackhi_i8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_unpackhi_i8"
+    [@@noalloc]
+
+  external unpacklo_i8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_unpacklo_i8"
+    [@@noalloc]
+
+  external xor_si256 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_xor_si256"
+    [@@noalloc]
+end

@@ -1,11 +1,11 @@
 (library
- (name        bigstringaf)
- (public_name bigstringaf)
+ (name        bigstringaf_simd)
+ (public_name bigstringaf_simd)
  (libraries   bigarray-compat)
  (flags       (:standard -safe-string))
 
- (c_names     bigstringaf_stubs)
- (c_flags     (:standard -Wall -Wextra -Wpedantic))
+ (c_names     bigstringaf_stubs bigstringaf_simd bigstringaf_simd_avx2)
+ (c_flags     (:standard -Wall -Wextra -Wpedantic -mavx2))
 
  (js_of_ocaml (javascript_files runtime.js))
 )

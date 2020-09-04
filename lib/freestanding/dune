@@ -1,6 +1,6 @@
 (library
- (name        bigstringaf_freestanding)
- (public_name bigstringaf.freestanding)
+ (name        bigstringaf_simd_freestanding)
+ (public_name bigstringaf_simd.freestanding)
  (optional)
  (libraries   bigarray-compat ocaml-freestanding)
  (c_names     bigstringaf_stubs)

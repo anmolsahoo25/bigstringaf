@@ -3,7 +3,14 @@ type bigstring =
 
 type t = bigstring
 
-let create size = Bigarray_compat.(Array1.create char c_layout size)
+external _create:
+  (char, Bigarray_compat.int8_unsigned_elt) Bigarray_compat.kind
+  -> Bigarray_compat.c_layout Bigarray_compat.layout
+  -> int array -> bigstring = "bigstringaf_simd_create"
+
+let create size =
+  _create Bigarray_compat.char Bigarray_compat.c_layout [|size|]
+
 let empty       = create 0
 
 module BA1 = Bigarray_compat.Array1
@@ -334,3 +341,114 @@ let unsafe_get_int64_le, unsafe_get_int64_be =
   if Sys.big_endian
   then USwap.caml_bigstring_unsafe_get_64, caml_bigstring_unsafe_get_64
   else caml_bigstring_unsafe_get_64      , USwap.caml_bigstring_unsafe_get_64
+
+module Intrinsics = struct
+  external abs_i8 : (t * int) -> (t * int) -> unit = "bigstringaf_simd_abs_i8"
+    [@@noalloc]
+
+  external add_i8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_add_i8"
+    [@@noalloc]
+
+  external adds_i8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_adds_i8"
+    [@@noalloc]
+
+  external adds_u8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_adds_u8"
+    [@@noalloc]
+
+  external and_si256 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_and_si256"
+    [@@noalloc]
+
+  external andnot_si256 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_and_si256"
+    [@@noalloc]
+
+  external avg_u8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_avg_u8"
+    [@@noalloc]
+
+  external blend_i8 : (t * int) -> (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_blend_i8"
+    [@@noalloc]
+
+  external broadcast_i8 : (t * int) -> char -> unit
+    = "bigstringaf_simd_broadcast_i8"
+    [@@noalloc]
+
+  external cmpeq_i8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_cmpeq_i8"
+    [@@noalloc]
+
+  external max_i8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_max_i8"
+    [@@noalloc]
+
+  external max_u8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_max_u8"
+    [@@noalloc]
+
+  external min_i8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_min_i8"
+    [@@noalloc]
+
+  external min_u8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_min_u8"
+    [@@noalloc]
+
+  external movemask_i8 : (t * int) -> int = "bigstringaf_simd_movemask_i8"
+    [@@noalloc]
+
+  external or_si256 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_or_si256"
+    [@@noalloc]
+
+  external set_i8 : (t * int) -> char array -> unit = "bigstringaf_simd_set_i8"
+    [@@noalloc]
+
+  external shuffle_i8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_shuffle_i8"
+    [@@noalloc]
+
+  external sign_i8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_sign_i8"
+    [@@noalloc]
+
+  external sub_i8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_sub_i8"
+    [@@noalloc]
+
+  external subs_i8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_subs_i8"
+    [@@noalloc]
+
+  external subs_u8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_subs_u8"
+    [@@noalloc]
+
+  external testc_si256 : (t * int) -> (t * int) -> int
+    = "bigstringaf_simd_testc_si256"
+    [@@noalloc]
+
+  external testnzc_si256 : (t * int) -> (t * int) -> int
+    = "bigstringaf_simd_testnzc_si256"
+    [@@noalloc]
+
+  external testz_si256 : (t * int) -> (t * int) -> int
+    = "bigstringaf_simd_testz_si256"
+    [@@noalloc]
+
+  external unpackhi_i8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_unpackhi_i8"
+    [@@noalloc]
+
+  external unpacklo_i8 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_unpacklo_i8"
+    [@@noalloc]
+
+  external xor_si256 : (t * int) -> (t * int) -> (t * int) -> unit
+    = "bigstringaf_simd_xor_si256"
+    [@@noalloc]
+end
