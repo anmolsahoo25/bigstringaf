@@ -285,112 +285,113 @@ val unsafe_memcmp_string : t -> int -> string -> int -> int -> int
 *)
 
 module Intrinsics : sig
-  external abs_i8 : (t * int) -> (t * int) -> unit = "bigstringaf_simd_abs_i8"
+  external abs_i8 : t -> int -> t -> int -> unit
+    = "bigstringaf_simd_abs_i8"
     [@@noalloc]
 
-  external add_i8 : (t * int) -> (t * int) -> (t * int) -> unit
-    = "bigstringaf_simd_add_i8"
+  external add_i8 : t -> int -> t -> int -> t -> int -> unit
+    = "bigstringaf_simd_unimpl" "bigstringaf_simd_add_i8"
     [@@noalloc]
 
-  external adds_i8 : (t * int) -> (t * int) -> (t * int) -> unit
-    = "bigstringaf_simd_adds_i8"
+  external adds_i8 : t -> int -> t -> int -> t -> int -> unit
+    = "bigstringaf_simd_unimpl" "bigstringaf_simd_adds_i8"
     [@@noalloc]
 
-  external adds_u8 : (t * int) -> (t * int) -> (t * int) -> unit
-    = "bigstringaf_simd_adds_u8"
+  external adds_u8 : t -> int -> t -> int -> t -> int -> unit
+    = "bigstringaf_simd_unimpl" "bigstringaf_simd_adds_u8"
     [@@noalloc]
 
-  external and_si256 : (t * int) -> (t * int) -> (t * int) -> unit
-    = "bigstringaf_simd_and_si256"
+  external and_si256 : t -> int -> t -> int -> t -> int -> unit
+    = "bigstringaf_simd_unimpl" "bigstringaf_simd_and_si256"
     [@@noalloc]
 
-  external andnot_si256 : (t * int) -> (t * int) -> (t * int) -> unit
-    = "bigstringaf_simd_and_si256"
+  external andnot_si256 : t -> int -> t -> int -> t -> int -> unit
+    = "bigstringaf_simd_unimpl" "bigstringaf_simd_and_si256"
     [@@noalloc]
 
-  external avg_u8 : (t * int) -> (t * int) -> (t * int) -> unit
-    = "bigstringaf_simd_avg_u8"
+  external avg_u8 : t -> int -> t -> int -> t -> int -> unit
+    = "bigstringaf_simd_unimpl" "bigstringaf_simd_avg_u8"
     [@@noalloc]
 
-  external blend_i8 : (t * int) -> (t * int) -> (t * int) -> (t * int) -> unit
-    = "bigstringaf_simd_blend_i8"
+  external blend_i8 : t -> int -> t -> int -> t -> int -> t -> int -> unit
+    = "bigstringaf_simd_unimpl" "bigstringaf_simd_blend_i8"
     [@@noalloc]
 
-  external broadcast_i8 : (t * int) -> char -> unit
+  external broadcast_i8 : t -> int -> char -> unit
     = "bigstringaf_simd_broadcast_i8"
     [@@noalloc]
 
-  external cmpeq_i8 : (t * int) -> (t * int) -> (t * int) -> unit
-    = "bigstringaf_simd_cmpeq_i8"
+  external cmpeq_i8 : t -> int -> t -> int -> t -> int -> unit
+    = "bigstringaf_simd_unimpl" "bigstringaf_simd_cmpeq_i8"
     [@@noalloc]
 
-  external max_i8 : (t * int) -> (t * int) -> (t * int) -> unit
-    = "bigstringaf_simd_max_i8"
+  external max_i8 : t -> int -> t -> int -> t -> int -> unit
+    = "bigstringaf_simd_unimpl" "bigstringaf_simd_max_i8"
     [@@noalloc]
 
-  external max_u8 : (t * int) -> (t * int) -> (t * int) -> unit
-    = "bigstringaf_simd_max_u8"
+  external max_u8 : t -> int -> t -> int -> t -> int -> unit
+    = "bigstringaf_simd_unimpl" "bigstringaf_simd_max_u8"
     [@@noalloc]
 
-  external min_i8 : (t * int) -> (t * int) -> (t * int) -> unit
-    = "bigstringaf_simd_min_i8"
+  external min_i8 : t -> int -> t -> int -> t -> int -> unit
+    = "bigstringaf_simd_unimpl" "bigstringaf_simd_min_i8"
     [@@noalloc]
 
-  external min_u8 : (t * int) -> (t * int) -> (t * int) -> unit
-    = "bigstringaf_simd_min_u8"
+  external min_u8 : t -> int -> t -> int -> t -> int -> unit
+    = "bigstringaf_simd_unimpl" "bigstringaf_simd_min_u8"
     [@@noalloc]
 
-  external movemask_i8 : (t * int) -> int = "bigstringaf_simd_movemask_i8"
+  external movemask_i8 : t -> int -> int = "bigstringaf_simd_movemask_i8"
     [@@noalloc]
 
-  external or_si256 : (t * int) -> (t * int) -> (t * int) -> unit
-    = "bigstringaf_simd_or_si256"
+  external or_si256 : t -> int -> t -> int -> t -> int -> unit
+    = "bigstringaf_simd_unimpl" "bigstringaf_simd_or_si256"
     [@@noalloc]
 
-  external set_i8 : (t * int) -> char array -> unit = "bigstringaf_simd_set_i8"
+  external set_i8 : t -> int -> char array -> unit = "bigstringaf_simd_set_i8"
     [@@noalloc]
 
-  external shuffle_i8 : (t * int) -> (t * int) -> (t * int) -> unit
-    = "bigstringaf_simd_shuffle_i8"
+  external shuffle_i8 : t -> int -> t -> int -> t -> int -> unit
+    = "bigstringaf_simd_unimpl" "bigstringaf_simd_shuffle_i8"
     [@@noalloc]
 
-  external sign_i8 : (t * int) -> (t * int) -> (t * int) -> unit
-    = "bigstringaf_simd_sign_i8"
+  external sign_i8 : t -> int -> t -> int -> t -> int -> unit
+    = "bigstringaf_simd_unimpl" "bigstringaf_simd_sign_i8"
     [@@noalloc]
 
-  external sub_i8 : (t * int) -> (t * int) -> (t * int) -> unit
-    = "bigstringaf_simd_sub_i8"
+  external sub_i8 : t -> int -> t -> int -> t -> int -> unit
+    = "bigstringaf_simd_unimpl" "bigstringaf_simd_sub_i8"
     [@@noalloc]
 
-  external subs_i8 : (t * int) -> (t * int) -> (t * int) -> unit
-    = "bigstringaf_simd_subs_i8"
+  external subs_i8 : t -> int -> t -> int -> t -> int -> unit
+    = "bigstringaf_simd_unimpl" "bigstringaf_simd_subs_i8"
     [@@noalloc]
 
-  external subs_u8 : (t * int) -> (t * int) -> (t * int) -> unit
-    = "bigstringaf_simd_subs_u8"
+  external subs_u8 : t -> int -> t -> int -> t -> int -> unit
+    = "bigstringaf_simd_unimpl" "bigstringaf_simd_subs_u8"
     [@@noalloc]
 
-  external testc_si256 : (t * int) -> (t * int) -> int
+  external testc_si256 : t -> int -> t -> int -> int
     = "bigstringaf_simd_testc_si256"
     [@@noalloc]
 
-  external testnzc_si256 : (t * int) -> (t * int) -> int
+  external testnzc_si256 : t -> int -> t -> int -> int
     = "bigstringaf_simd_testnzc_si256"
     [@@noalloc]
 
-  external testz_si256 : (t * int) -> (t * int) -> int
+  external testz_si256 : t -> int -> t -> int -> int
     = "bigstringaf_simd_testz_si256"
     [@@noalloc]
 
-  external unpackhi_i8 : (t * int) -> (t * int) -> (t * int) -> unit
-    = "bigstringaf_simd_unpackhi_i8"
+  external unpackhi_i8 : t -> int -> t -> int -> t -> int -> unit
+    = "bigstringaf_simd_unimpl" "bigstringaf_simd_unpackhi_i8"
     [@@noalloc]
 
-  external unpacklo_i8 : (t * int) -> (t * int) -> (t * int) -> unit
-    = "bigstringaf_simd_unpacklo_i8"
+  external unpacklo_i8 : t -> int -> t -> int -> t -> int -> unit
+    = "bigstringaf_simd_unimpl" "bigstringaf_simd_unpacklo_i8"
     [@@noalloc]
 
-  external xor_si256 : (t * int) -> (t * int) -> (t * int) -> unit
-    = "bigstringaf_simd_xor_si256"
+  external xor_si256 : t -> int -> t -> int -> t -> int -> unit
+    = "bigstringaf_simd_unimpl" "bigstringaf_simd_xor_si256"
     [@@noalloc]
 end
